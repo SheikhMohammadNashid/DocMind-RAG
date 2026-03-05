@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>About DocMind</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="top-bar">
+        <div class="brand">
+          <span class="logo-dot"></span>
+          <span class="brand-title">DocMind</span>
+        </div>
+        <a href="index.html" class="muted" style="text-decoration: none;">← Back to App</a>
+      </header>
+
+      <main class="card" style="max-width: 840px; margin: 0 auto 1.5rem;">
+        <h1 style="margin-top: 0; margin-bottom: 0.75rem; font-size: 1.4rem;">
+          About DocMind
+        </h1>
+
+        <p>
+          <strong>DocMind</strong> is an intelligent document question-answering system built
+          using Retrieval-Augmented Generation (RAG). It allows users to upload PDF documents and
+          interact with them using natural language questions. Instead of manually searching
+          through lengthy documents, DocMind retrieves relevant sections from the uploaded
+          document and generates accurate, context-aware answers.
+        </p>
+
+        <p>
+          The system works by extracting text from uploaded PDFs and dividing the content into
+          smaller chunks. These chunks are converted into vector embeddings and stored in a
+          vector database. When a user asks a question, the system searches the vector database
+          to find the most relevant pieces of information from the document. These retrieved
+          sections are then provided as context to a large language model, which generates a
+          precise and informative response.
+        </p>
+
+        <p>
+          This approach ensures that answers are grounded in the document itself rather than
+          relying only on the general knowledge of the language model. As a result, DocMind
+          enables efficient knowledge retrieval and improves the way users interact with large
+          amounts of textual information.
+        </p>
+
+        <h2 style="margin-top: 1.5rem; font-size: 1.05rem;">Technologies Used</h2>
+        <ul>
+          <li><strong>FastAPI</strong> for the backend API</li>
+          <li><strong>React and TailwindCSS</strong> for the modern frontend interface</li>
+          <li><strong>FAISS</strong> for vector similarity search</li>
+          <li><strong>Sentence Transformers</strong> for generating text embeddings</li>
+          <li><strong>Ollama with Llama 3</strong> for local language model inference</li>
+        </ul>
+
+        <h2 style="margin-top: 1.5rem; font-size: 1.05rem;">Purpose</h2>
+        <p>
+          The purpose of DocMind is to demonstrate how modern AI systems can combine information
+          retrieval techniques with large language models to create powerful document-analysis
+          tools. Systems like this can be applied in research, education, knowledge management,
+          and document exploration, helping users quickly find answers within large documents.
+        </p>
+
+        <h2 style="margin-top: 1.5rem; font-size: 1.05rem;">Author</h2>
+        <p>
+          <strong>Sheikh Mohannad Nashid</strong><br />
+          AI, DevOps &amp; Technology Enthusiast
+        </p>
+        <p>
+          DocMind was developed as part of a personal exploration into artificial intelligence,
+          retrieval systems, DevOps practices, and modern web technologies.
+        </p>
+        <p>
+          Email:
+          <a href="mailto:sheikhmohammadnashid@gmail.com"
+            >sheikhmohammadnashid@gmail.com</a
+          ><br />
+          Location: Srinagar, Kashmir<br />
+          GitHub:
+          <a href="https://github.com/SheikhMohammadNashid" target="_blank"
+            >github.com/SheikhMohammadNashid</a
+          >
+        </p>
+      </main>
+
+      <footer class="footer">
+        <span class="muted">DocMind · Intelligent PDF RAG assistant</span>
+      </footer>
+    </div>
+  </body>
+  </html>
+

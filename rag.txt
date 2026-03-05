@@ -1,0 +1,84 @@
+
+
+---
+
+STEPS INVOLVED IN RAG (RETRIEVAL-AUGMENTED GENERATION)
+
+1. Data ingestion
+   Collect source data such as PDFs, documents, web pages, databases, or code repositories.
+   Output: raw text.
+
+2. Text cleaning and normalization
+   Remove noise like headers, footers, extra spaces, broken lines, and encoding issues.
+   Output: clean, readable text.
+
+3. Text chunking (text splitting)
+   Split large text into smaller chunks using a text splitter.
+   Chunk size and overlap are chosen to preserve context.
+   Output: list of text chunks.
+
+4. Tokenization
+   Convert each text chunk into tokens and token IDs that the model understands.
+   Output: sequence of token IDs.
+
+5. Embedding matrix lookup
+   Each token ID is mapped to a vector using a learned embedding matrix.
+   Output: token-level vectors.
+
+6. Neural encoding (transformer layers)
+   Token vectors pass through neural network layers with self-attention to become context-aware.
+   Output: contextual token embeddings.
+
+7. Pooling
+   Combine all token vectors of a chunk into one fixed-size vector.
+   Common methods: mean pooling, CLS pooling, max pooling.
+   Output: single embedding per chunk.
+
+8. Vector normalization
+   Normalize the embedding vectors so similarity calculations work correctly.
+   Output: normalized embeddings.
+
+9. Vector storage
+   Store embeddings along with text and metadata in a vector database.
+   Examples: FAISS, Chroma, Pinecone, Milvus.
+
+10. Index construction
+    Build an index (HNSW, IVF, or flat) for fast similarity search.
+    Output: searchable vector index.
+
+---
+
+QUERY-TIME RAG FLOW
+
+11. User query input
+    User asks a question.
+
+12. Query embedding
+    The query goes through the same steps: tokenization, embedding lookup, neural encoding, pooling, and normalization.
+    Output: query vector.
+
+13. Similarity search
+    Compare the query vector with stored vectors using cosine similarity or another metric.
+    Output: top-K most relevant text chunks.
+
+14. Optional re-ranking
+    Re-order retrieved chunks using a re-ranker or LLM scoring for better relevance.
+    Output: best matching chunks.
+
+15. Context assembly
+    Combine the retrieved chunks into a single context block.
+
+16. Prompt construction
+    Create a prompt containing system instructions, retrieved context, and the user query.
+
+17. Generation
+    The LLM generates an answer using the retrieved context and its pretrained knowledge.
+    Output: final response.
+
+18. Post-processing (optional)
+    Formatting, citations, filtering, or validation of the final answer.
+
+---
+
+
+
