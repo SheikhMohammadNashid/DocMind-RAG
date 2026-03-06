@@ -2,88 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>DocMind – PDF RAG Assistant</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DocMind — RAG Document Assistant</title>
+    <meta name="description" content="Intelligent PDF question-answering powered by RAG and Llama 3" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { background: #080818; overflow: hidden; }
+    </style>
   </head>
   <body>
-    <div class="app-shell">
-      <header class="top-bar">
-        <div class="brand">
-          <span class="logo-dot"></span>
-          <span class="brand-title">DocMind</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 0.9rem;">
-          <span class="tagline">Personal RAG over your PDFs</span>
-          <a
-            href="about.html"
-            class="muted"
-            style="
-              font-size: 0.85rem;
-              padding: 0.3rem 0.7rem;
-              border-radius: 999px;
-              border: 1px solid rgba(148, 163, 184, 0.5);
-              text-decoration: none;
-              background: rgba(15, 23, 42, 0.7);
-            "
-            >About</a
-          >
-        </div>
-      </header>
-
-      <main class="main-layout">
-        <section class="card upload-card">
-          <h2>1. Upload a PDF</h2>
-          <p class="muted">
-            Drop a document or browse your files. DocMind will index it for
-            fast, context-aware answers.
-          </p>
-
-          <label id="drop-zone" class="drop-zone">
-            <input id="file-input" type="file" accept="application/pdf" />
-            <div class="drop-zone-content">
-              <div class="drop-icon">📄</div>
-              <div>
-                <div class="drop-title">Drag &amp; drop your PDF here</div>
-                <div class="drop-subtitle">or click to choose a file</div>
-              </div>
-            </div>
-          </label>
-
-          <button id="upload-btn" class="primary-btn" disabled>
-            Upload &amp; Index
-          </button>
-
-          <div id="upload-status" class="status-text"></div>
-        </section>
-
-        <section class="card qa-card">
-          <h2>2. Ask questions</h2>
-          <p class="muted">
-            Once the PDF is processed, ask anything and DocMind will answer
-            using only the document content.
-          </p>
-
-          <div class="qa-input-row">
-            <textarea
-              id="question-input"
-              placeholder="Ask something like “Summarize section 2” or “What are the key risks mentioned?”"
-              rows="3"
-            ></textarea>
-            <button id="ask-btn" class="primary-btn" disabled>Ask</button>
-          </div>
-
-          <div id="answer-panel" class="answer-panel hidden">
-            <div class="answer-header">
-              <span class="pill">Answer</span>
-            </div>
-            <div id="answer-text"></div>
-          </div>
-
-          <div id="qa-status" class="status-text"></div>
-        </section>
-      </main>
-    <script src="app.js"></script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
-  </html>
-
+</html>

@@ -1,37 +1,124 @@
-version: "3.9"
+# ── DocMind — Full RAG Stack ──────────────────────────────────────────────────
+#
+#  Services:
+#    ollama   — Local LLM server (Llama 3)
+#    backend  — FastAPI RAG API
+#    frontend — React + Nginx UI
+#
+#  Usage:
+#    docker compose up --build          # Start everything
+#    docker compose up --build -d       # Detached mode
+#    docker compose down -v             # Stop and remove volumes
+# ─────────────────────────────────────────────────────────────────────────────
 
 services:
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: docmind-backend
-    environment:
-      - OLLAMA_BASE_URL=http://ollama:11434
-    ports:
-      - "8000:8000"
-    depends_on:
-      - ollama
 
-  frontend:
-    image: nginx:alpine
-    container_name: docmind-frontend
-    volumes:
-      - ./frontend:/usr/share/nginx/html:ro
-      - ./frontend/nginx.conf:/etc/nginx/nginx.conf:ro
-    ports:
-      - "8080:80"
-    depends_on:
-      - backend
-
+  # ── Ollama: Local LLM ────────────────────────────────────────────────────────
   ollama:
     image: ollama/ollama:latest
     container_name: docmind-ollama
+    restart: unless-stopped
     ports:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
+    networks:
+      - docmind-net
+    # Pull llama3 model on first start if not already present
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list | grep -q llama3 || ollama pull llama3"]
+      interval: 60s
+      timeout: 300s
+      retries: 5
+      start_period: 30s
+    # GPU support — uncomment the deploy block below if you have an NVIDIA GPU
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
 
+  # ── Model Puller: Ensures llama3 is downloaded before backend starts ─────────
+  ollama-pull:
+    image: ollama/ollama:latest
+    container_name: docmind-ollama-pull
+    restart: "no"
+    depends_on:
+      ollama:
+        condition: service_started
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        echo "Waiting for Ollama to be ready..."
+        until ollama list 2>/dev/null; do sleep 3; done
+        echo "Pulling llama3 model (this may take a few minutes on first run)..."
+        OLLAMA_HOST=http://ollama:11434 ollama pull tinyllama
+        echo "Model ready!"
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+    networks:
+      - docmind-net
+
+  # ── Backend: FastAPI RAG API ─────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: docmind-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - OLLAMA_URL=http://ollama:11434
+      - OLLAMA_MODEL=tinyllama  # ~637MB, fastest CPU model; change to llama3.2:1b or llama3 if you have GPU
+    networks:
+      - docmind-net
+    depends_on:
+      ollama:
+        condition: service_started
+      ollama-pull:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health')\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # ── Frontend: React + Nginx ──────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: docmind-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    networks:
+      - docmind-net
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:80 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+# ── Networks ──────────────────────────────────────────────────────────────────
+networks:
+  docmind-net:
+    driver: bridge
+
+# ── Volumes ───────────────────────────────────────────────────────────────────
 volumes:
   ollama_data:
-
+    driver: local
+    # To use a custom path on the host, uncomment:
+    # driver_opts:
+    #   type: none
+    #   o: bind
+    #   device: /path/to/ollama/models
