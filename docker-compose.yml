@@ -64,8 +64,7 @@ services:
   # ── Backend: FastAPI RAG API ─────────────────────────────────────────────────
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      image: ${DOCKER_USER}/docmind-rag-backend:v${TAG}
     container_name: docmind-backend
     restart: unless-stopped
     ports:
@@ -90,8 +89,7 @@ services:
   # ── Frontend: React + Nginx ──────────────────────────────────────────────────
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      image: ${DOCKER_USER}/docmind-rag-frontend:v${TAG}
     container_name: docmind-frontend
     restart: unless-stopped
     ports:
